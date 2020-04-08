@@ -1,14 +1,11 @@
-const { google } = require("googleapis");
+const UserAvailabilitBiz = require("../biz/user_availability.biz");
 
-const CalendarBiz = require("../biz/calendar.biz");
-
-const Helpers = require("../util");
-
-class CalendarController {
+class UserController {
 
     register(app) {
-        app.route("/events")
+        app.route("/availability")
             .all(async (request, response, next) => {
+                // next();
                 if (!Helpers.isObjectEmpty(request.session.user)) {
                     // get oauth2 client
                     const oauth2Client = new google.auth.OAuth2();
@@ -23,19 +20,18 @@ class CalendarController {
             })
             .get(async (request, response, next) => {
                 try {
-                    const calendarBizObj = new CalendarBiz();
-                    const calendarEventList = await calendarBizObj.getCalendarEvents(request.oauth);
-                    return response.json(calendarEventList);
+                    const userBizObj = new UserBiz();
+                    const userAvialiblityResponse = await userBizObj.getUserAvailability(request.session.user);
+                    return response.json(userAvialiblityResponse);
                 } catch (error) {
                     next(error);
                 }
             })
-        app.route("/:publisher")
             .post(async (request, response, next) => {
                 try {
-                    const calendarBizObj = new CalendarBiz();
-                    const calendarEventList = await calendarBizObj.createEvent(request.oauth,request.body, request.params.publisher);
-                    return response.json(calendarEventList);
+                    const userBizObj = new UserAvailabilitBiz();
+                    const userAvialiblityResponse = await userBizObj.createUserAvailability(request.body);
+                    return response.json(userAvialiblityResponse);
                 } catch (error) {
                     next(error);
                 }
@@ -43,4 +39,4 @@ class CalendarController {
     }
 }
 
-module.exports = CalendarController;
+module.exports = UserController;

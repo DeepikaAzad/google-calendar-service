@@ -68,6 +68,5 @@ module.exports.getGoogleAccountFromCode = async function (code, cb) {
             }
             cb(null, userProfile);
         }
-    })
-
+    });
 }

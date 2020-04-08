@@ -3,7 +3,11 @@ const express = require("express");
 const app = express();
 const session = require("express-session");
 const bodyParser = require("body-parser");
+
 require("./model/index");
+
+const errorHandlerMiddleware = require("./middleware/errorHandler.middleware");
+
 const router = require("./route/api");
 
 require("dotenv").config();
@@ -34,6 +38,9 @@ app.get("/", (req, res) => {
 });
 
 const port = process.env.PORT_NO || 3200;
+
+// Error Handling Middleware
+app.use(errorHandlerMiddleware.errorHandler);
 
 app.listen(port);
 console.log(`Server is started on port ${port}...`);

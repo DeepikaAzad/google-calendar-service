@@ -1,4 +1,4 @@
-app.controller('homeController', function ($scope, $route, $rootScope, HomeService, toastr) {
+app.controller("homeController", function ($scope, $route, $rootScope, HomeService, toastr) {
     $scope.today = new Date();
 
     // Called on page init.

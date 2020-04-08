@@ -1,11 +1,10 @@
-// app.service('$todoService', function($http) {
-    app.factory('HomeService', function ($http, $window) {
+app.factory('HomeService', function ($http, $window) {
 
-        const baseUrl =  $window.origin;
-    
-        return {
-            googleLogin: function () {
-                return $http.get(baseUrl + '/login');
-            }
-        };
-    });
+    const baseUrl = $window.origin;
+
+    return {
+        googleLogin: function () {
+            return $http.get(baseUrl + '/login');
+        }
+    };
+});
