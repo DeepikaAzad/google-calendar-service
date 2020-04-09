@@ -9,32 +9,35 @@ class CalendarController {
     register(app) {
         app.route("/events")
             .all(async (request, response, next) => {
-                if (!Helpers.isObjectEmpty(request.session.user)) {
+                try {
+                    if (Helpers.isObjectEmpty(request.session.user)) {
+                        throw new UnauthenticatedException("Unauthenticated user.");
+                    }
+                    next();
+                } catch (error) {
+                    next(error);
+                }
+            })
+            .get(async (request, response, next) => {
+                try {
                     // get oauth2 client
                     const oauth2Client = new google.auth.OAuth2();
                     oauth2Client.setCredentials({
                         access_token: request.session.user.accessToken
                     });
-                    request.oauth = oauth2Client;
-                    next();
-                } else {
-                    response.redirect("/auth/login")
-                }
-            })
-            .get(async (request, response, next) => {
-                try {
+
                     const calendarBizObj = new CalendarBiz();
-                    const calendarEventList = await calendarBizObj.getCalendarEvents(request.oauth);
+                    const calendarEventList = await calendarBizObj.getCalendarEvents(oauth2Client);
                     return response.json(calendarEventList);
                 } catch (error) {
                     next(error);
                 }
             })
-        app.route("/:publisher")
+        app.route("/:publisher/event")
             .post(async (request, response, next) => {
                 try {
                     const calendarBizObj = new CalendarBiz();
-                    const calendarEventList = await calendarBizObj.createEvent(request.oauth,request.body, request.params.publisher);
+                    const calendarEventList = await calendarBizObj.createEvent(request.body, request.params.publisher);
                     return response.json(calendarEventList);
                 } catch (error) {
                     next(error);

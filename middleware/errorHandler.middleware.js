@@ -2,6 +2,7 @@ const SchemaValidationException = require("../exception/schema.exception");
 const ResourceNotFoundError = require("../exception/resourceNotFoundError.exception");
 const EventAvailabilityException = require("../exception/eventAvailability.exception");
 const DuplicateError = require("../exception/duplicateDataError.exception");
+const UnauthenticatedException = require("../exception/unauthenticated.exception");
 
 /**
  * Error Handling middleware
@@ -28,7 +29,15 @@ exports.errorHandler = async (error, request, response, next) => {
                 },
                 success: false
             });
-        } 
+        } else if(error instanceof UnauthenticatedException){
+            return response.status(401).json({
+                error: {
+                    code: error.code,
+                    message: error.message
+                },
+                success: false
+            });
+        }
 
         return response.status(500).json({
             error: {

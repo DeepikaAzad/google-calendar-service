@@ -3,8 +3,9 @@ const router = express.Router();
 
 const Helpers = require("../util");
 const googleUtil = require("../util/google-util");
-const UserBiz = require("../biz/user.biz")
-const CalendarBiz = require("../biz/calendar.biz")
+const UserBiz = require("../biz/user.biz");
+const CalendarBiz = require("../biz/calendar.biz");
+
 // Middleware to check and save session cookie
 const setCookie = async (request, response, next) => {
     googleUtil.getGoogleAccountFromCode(request.query.code, (err, response) => {
@@ -37,5 +38,16 @@ router.get("/loggedin", async (request, response) => {
 router.get("/login", (request, response) => {
     return response.redirect(googleUtil.urlGoogle());
 });
+
+// Destroy session and redirect user to logout.
+router.get('/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            res.redirect('/#/home');
+        }
+        res.clearCookie('sid');
+        res.redirect('/');
+    });
+})
 
 module.exports = router;

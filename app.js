@@ -3,14 +3,12 @@ const express = require("express");
 const app = express();
 const session = require("express-session");
 const bodyParser = require("body-parser");
-
+require("dotenv").config();
 require("./model/index");
 
 const errorHandlerMiddleware = require("./middleware/errorHandler.middleware");
 
 const router = require("./route/api");
-
-require("dotenv").config();
 app.use(express.static(__dirname + "/public"))
 
 app.use(
@@ -20,7 +18,7 @@ app.use(
 		resave: false,
 		secret: 'sssh, quiet! it\'s a secret!',
 		cookie: {
-			maxAge: 60000,
+			maxAge: 60000 * 30,
 			sameSite: true
 		}
 	})
@@ -37,7 +35,7 @@ app.get("/", (req, res) => {
 	res.send("Service is running...");
 });
 
-const port = process.env.PORT_NO || 3200;
+const port = process.env.PORT_NO || 3100;
 
 // Error Handling Middleware
 app.use(errorHandlerMiddleware.errorHandler);

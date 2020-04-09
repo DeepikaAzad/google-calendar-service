@@ -5,15 +5,27 @@ class User {
 
     /**
      * This method check if for given user time slot us already booked.
+     *
      * @param {*} userEmailId 
-     * @param {*} startTime 
-     * @param {*} endTime 
-     * @param {*} weekDay
-     * @return {boolean} 
      */
-    async isUserExist(userEmailId) {
-        const user = await UserSchema.findOne({ email: userEmailId }).exec();
-        return user == null;
+    async findUserByEmailId(userEmailId) {
+        return UserSchema.findOne({ email: userEmailId }).exec();
+    }
+
+    /**
+     * Function to update if already exist otherwise insert new user
+     *
+     * @param {*} userObj 
+     */
+    async saveUser(userObj) {
+        try {
+            return UserSchema.findOneAndUpdate({ email: userObj.email }, userObj, {
+                new: true,
+                upsert: true // Make this update into an upsert
+            }).exec();
+        } catch (error) {
+            throw error;
+        }
     }
 }
 

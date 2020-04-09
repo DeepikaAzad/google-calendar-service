@@ -4,7 +4,7 @@
   "description": "Calendar Schedule App",
   "main": "app.js",
   "scripts": {
-    "unit-test": "mocha test/user_availability.test.js --timeout=10000",
+    "unit-test": "mocha --timeout=10000 --exit",
     "test": "npm run unit-test"
   },
   "keywords": [
@@ -28,7 +28,6 @@
     "googleapis": "^48.0.0",
     "jsonschema": "^1.2.6",
     "lusca": "^1.6.1",
-    "mocha": "^7.1.1",
     "moment": "^2.24.0",
     "mongodb": "^3.5.5",
     "mongoose": "^5.9.7",
@@ -36,5 +35,9 @@
     "passport-google-oauth20": "^2.0.0",
     "query-string": "^6.11.1",
     "sinon": "^9.0.1"
+  },
+  "devDependencies": {
+    "mocha": "^7.1.1",
+    "mongodb-memory-server": "^6.5.2"
   }
 }

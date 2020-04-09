@@ -11,26 +11,16 @@ class Event {
      * @param {*} endDateTime 
      * @returns {boolean}
      */
-    async isEventBooked(userEmailId, startDateTime, endDateTime) {
-        return new Promise(async (resolve, reject) => {
-            try {
-                const event = await EventSchema.findOne({
-                    start: {
-                        dateTime: startDateTime
-                    },
-                    end: {
-                        dateTime: endDateTime
-                    },
-                    organizer: {
-                        email: userEmailId
-                    }
-                });
-                const isAlreadyBooked = event != null ? true : false;
-                return resolve(isAlreadyBooked);
-            } catch (error) {
-                return reject(error);
-            }
-        });
+    async getUserEvent(userEmailId, startDateTime, endDateTime) {
+        try {
+            return EventSchema.findOne({
+                "start.dateTime": startDateTime,
+                "end.dateTime": endDateTime,
+                "publisherEmail": userEmailId
+            }).exec();
+        } catch (error) {
+            throw error;
+        }
     }
 
 
@@ -39,13 +29,9 @@ class Event {
             event.isNewEvent = true;
             // Update if already exist otherwise insert new user
             const userResponse = await EventSchema.findOneAndUpdate({
-                start: {
-                    dateTime: event.start.dateTime
-                },
-                end: {
-                    dateTime: event.end.dateTime
-                },
-                publisherEmail: publisherEmail,
+                "start.dateTime": event.start.dateTime,
+                "end.dateTime": event.end.dateTime,
+                "publisherEmail": publisherEmail
             }, event, {
                 new: true, // return the document after update was applied.
                 upsert: true // Make this update into an upsert
@@ -61,7 +47,7 @@ class Event {
      * @param {*} userEmailId 
      */
     async getNewEventOfUser(userEmailId) {
-        return await EventSchema.find({publisherEmail: userEmailId, isNewEvent: true}).exec();
+        return await EventSchema.find({ publisherEmail: userEmailId, isNewEvent: true }).exec();
     }
 
     /**
@@ -69,14 +55,14 @@ class Event {
      * 
      * @param {*} userEmail 
      */
-    async updateEventStatus(userEmail){
-        try{
+    async updateEventStatus(userEmail) {
+        try {
             await EventSchema.findOneAndUpdate({
                 publisherEmail: userEmail
             }, {
-                isNewEvent : false
+                isNewEvent: false
             }).exec();
-        }catch(error){
+        } catch (error) {
             throw error;
         }
     }

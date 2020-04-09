@@ -1,14 +1,25 @@
 const { google } = require("googleapis");
 
+const UserBiz = require("../biz/user.biz");
+const UserAvailability = require("../biz/userAvailability.biz");
 
-const UserAvailabilityRepo = require("../repository/user_availability.repository");
-const UserRepo = require("../repository/user.repository");
 const EventRepo = require("../repository/event.repository");
+
 const EventValidator = require("../validator/event.validator");
+
 const EventAvailabilityException = require("../exception/eventAvailability.exception");
+
+const ResourceNotFoundError = require("../exception/resourceNotFoundError.exception");
 
 class Calendar {
 
+    /**
+     * Function to get calendar evnets from Google calendar.
+     *
+     * @param {*} auth 
+     * @param {*} timeMin 
+     * @param {*} timeMax 
+     */
     async getCalendarEvents(auth, timeMin = null, timeMax = null) {
         try {
             const date = new Date();
@@ -34,19 +45,22 @@ class Calendar {
      * This Method books timeslot with organizer
      * Check if timeslot is available and not booked.
      *  
-     * @param {*} auth 
-     * @param {*} event // create obj
+     * @param {*} event
+     * @param {*} publisher  
      */
-    async createEvent(auth, event, publisher) {
+    async createEvent(event, publisher) {
         try {
             const publisherEmail = publisher + "@gmail.com";
-            const isUserNotExist = await (new UserRepo()).isUserExist(publisherEmail);
-            if (publisher != null && isUserNotExist) {
-                return new ResourceNotFoundError("The page you are looking for could not be found.")
+            const userBiz = new UserBiz();
+            const isUserExist = await userBiz.isUserExist(publisherEmail);
+            if (publisher != null && !isUserExist) {
+                throw new ResourceNotFoundError("The page you are looking for could not be found.")
             }
             // Validate event request
-            (new EventValidator()).validateEventObj(event);
-            const availabilityObj = new UserAvailabilityRepo();
+            const eventValidator = new EventValidator();
+            eventValidator.validateEventObj(event);
+
+            const availabilityObj = new UserAvailability();
             const userEmailId = publisherEmail;
             const timeAndWeekday = this.getWeekDayAndTime(event.start.dateTime, event.end.dateTime);
 
@@ -55,21 +69,37 @@ class Calendar {
             const weekDay = timeAndWeekday.week_day;
 
             const isTimeSlotAvailable = await availabilityObj.isTimeSlotAvailable(userEmailId, startTime, endTime, weekDay);
-            const eventRepoObj = new EventRepo();
+            const eventRepo = new EventRepo();
             if (!isTimeSlotAvailable) {
                 throw new EventAvailabilityException("Time slot is not avialable.");
             } else {
-                const isEventBooked = await eventRepoObj.isEventBooked(userEmailId, startTime, endTime);
+                const isEventBooked = await this.isEventBooked(userEmailId, event.start.dateTime, event.end.dateTime);
                 if (isEventBooked) {
                     throw new EventAvailabilityException("Time slot is already booked.");
                 }
             }
-
             // Insert event 
-            await eventRepoObj.updateOrCreateEvent(event, publisherEmail);
+            await eventRepo.updateOrCreateEvent(event, publisherEmail);
+            return {
+                "success" : true,
+                "message" : "Event Booked Successfully"
+            }
         } catch (error) {
             throw error;
         }
+    }
+
+    /**
+     * Is User request for the same already.
+     * 
+     * @param {*} userEmailId 
+     * @param {*} startDateTime 
+     * @param {*} endDateTime 
+     */
+    async isEventBooked(userEmailId, startDateTime, endDateTime) {
+        const eventRepo = new EventRepo();
+        const event = await eventRepo.getUserEvent(userEmailId, startDateTime, endDateTime);
+        return event != null ? true : false;
     }
 
     /**

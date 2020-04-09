@@ -44,12 +44,14 @@ app.controller("homeController", function ($scope, $route, $rootScope, HomeServi
         });
     }
 
-    $scope.eventClicked = function(calendarEvent) {
-        // Handle event clicked.
+    $scope.eventClicked = function (calendarEvent) {
+        // @TODO: Handle event clicked.
+        console.log("Handle event click action");
     }
 
-    $scope.editEvent = function(calendarEvent) {
-        // Handle event edit.
+    $scope.editEvent = function (calendarEvent) {
+        // @TODO: Handle event edit.
+        console.log("Handle edit action");
     }
 
     $scope.initPage();

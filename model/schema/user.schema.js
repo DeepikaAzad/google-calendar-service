@@ -9,26 +9,27 @@ module.exports = {
                 "format": "email"
             },
             "timeSlot": {
-                "type": "array",
-                "items" : { 
-                    "type" : "object",
-                    "additionalProperties": false,
-                    "properties": {
-                        "slotType": {
-                            "type": "string",
-                            "enum": ["week_day", "date"]
-                        },
-                        "weekDay": {
-                            "type": "string",
-                            "enum": ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
-                        },
-                        "date": {
-                            "type": "string"
-                        },
-                        "interval": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                    "slotType": {
+                        "type": "string",
+                        "enum": ["week_day", "date"]
+                    },
+                    "weekDay": {
+                        "type": "string",
+                        "enum": ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"]
+                    },
+                    "date": {
+                        "type": "string"
+                    },
+                    "interval": {
+                        "type": "array",
+                        "items": {
                             "type": "object",
-                            "properties":{
-                                "from" : {
+                            "additionalProperties": false,
+                            "properties": {
+                                "from": {
                                     "type": "string",
                                     "format": "time"
                                 },
@@ -38,12 +39,9 @@ module.exports = {
                                 },
                                 "required": ["from", "to"]
                             }
-                        },
-                        "startTime": {
-                            "type": "string"
                         }
                     },
-                    "required": ["slotType", "startTime"]
+                    "required": ["slotType"]
                 }
             }
         },
