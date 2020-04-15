@@ -10,6 +10,8 @@ To access the API:
 ![Cookie :)](./cookie.png)
 ![Postman YaY!!](./postman.png)
 
+[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/b9fc9b601fd7fd63baa6)
+
 Features:
 
 1. Have implemented secure oauth login with Google.
