@@ -1,0 +1,116 @@
+{
+	"info": {
+		"_postman_id": "7234b0dc-abd0-47db-b346-e93c467f3b77",
+		"name": "Calender Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "List of Events",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "<cookie_token>"
+					}
+				],
+				"url": {
+					"raw": "http://www.gcalendar.tk:3200/calendar/events",
+					"protocol": "http",
+					"host": [
+						"www",
+						"gcalendar",
+						"tk"
+					],
+					"port": "3200",
+					"path": [
+						"calendar",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Event",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Cookie",
+						"type": "text",
+						"value": "<cookie_token>"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"summary\": \"Test\",\n  \"description\": \"user can book event.\",\n  \"start\": {\n    \"dateTime\": \"2020-04-10T04:00:00.000Z\",\n    \"timeZone\": \"Asia/Kolkata\"\n  },\n  \"end\": {\n    \"dateTime\": \"2020-04-10T05:00:00.000Z\",\n    \"timeZone\": \"Asia/Kolkata\"\n  },\n  \"attendees\": {\n  \t\"email\" : \"azaddeepika05@gmail.com\"\n  }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://www.gcalendar.tk:3200/calendar/taniya05sen/event",
+					"protocol": "http",
+					"host": [
+						"www",
+						"gcalendar",
+						"tk"
+					],
+					"port": "3200",
+					"path": [
+						"calendar",
+						"taniya05sen",
+						"event"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "User set available timeslots",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "Cookie",
+						"value": "<cookie_token>",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"emailId\": \"azaddeepika05@gmail.com\",\n    \"timeSlot\": {\n        \"slotType\": \"week_day\",\n        \"weekDay\": \"TUESDAY\",\n        \"interval\": [\n            {\n                \"from\": \"15:01:00\",\n                \"to\": \"16:00:00\"\n            },\n            {\n                \"from\": \"16:01:00\",\n                \"to\": \"17:00:00\"\n            }\n        ]\n    }\n}"
+				},
+				"url": {
+					"raw": "http://www.gcalendar.tk:3200/user/availability",
+					"protocol": "http",
+					"host": [
+						"www",
+						"gcalendar",
+						"tk"
+					],
+					"port": "3200",
+					"path": [
+						"user",
+						"availability"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
