@@ -28,7 +28,7 @@
     "googleapis": "^48.0.0",
     "jsonschema": "^1.2.6",
     "lusca": "^1.6.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "mongodb": "^3.5.5",
     "mongoose": "^5.9.7",
     "passport": "^0.4.1",
